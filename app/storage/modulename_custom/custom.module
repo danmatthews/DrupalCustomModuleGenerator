@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * custom.module
+ */
+
+function custom_menu()
+{
+	$items = array();
+	return $items;
+}
+
+function custom_form_alter()
+{
+
+}

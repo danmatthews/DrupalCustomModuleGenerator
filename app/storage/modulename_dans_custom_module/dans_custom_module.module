@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * dans_custom_module.module
+ */
+
+function dans_custom_module_menu()
+{
+	$items = array();
+	return $items;
+}
+
+function dans_custom_module_form_alter()
+{
+
+}

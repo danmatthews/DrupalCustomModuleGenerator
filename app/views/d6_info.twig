@@ -1,0 +1,6 @@
+name = {{ module_name }}
+description = {{ description }}
+core = 6.x
+{% for d in dependencies %}
+dependencies[] = {{ d }}
+{% endfor %}
