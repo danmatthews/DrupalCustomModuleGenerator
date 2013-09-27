@@ -1,5 +1,0 @@
-name = custom
-description = This is an awesome module
-core = 6.x
-dependencies[] = views
-dependencies[] = cck

@@ -15,6 +15,13 @@ use \Chumper\Zipper\Zipper;
 
 Route::get('/', function()
 {
+
+	// Set an hourly cache to clean the folders out.
+	if (!Cache::has('cleanup')) {
+			File::cleanDirectory(storage_path().'/downloads');
+			Cache::put('cleanup', 1, 3600);
+	}
+
 	return View::make('hello', [
 		'input' => Input::old()
 	]);
@@ -45,7 +52,7 @@ Route::post('process', function()
 			'description' => $description,
 		])->render();
 
-		$tempfoldername = storage_path().'/modulename_'.$name;
+		$tempfoldername = storage_path().'/downloads/modulename_'.$name;
 
 		if (!File::isDirectory($tempfoldername)) {
 			File::makeDirectory($tempfoldername);

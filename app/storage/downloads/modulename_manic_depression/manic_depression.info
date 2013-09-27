@@ -1,0 +1,4 @@
+name = manic_depression
+description = This is a module
+core = 6.x
+dependencies[] = views

@@ -1,6 +1,0 @@
-name = dans_custom_module
-description = My custom module
-core = 6.x
-dependencies[] = views
-dependencies[] = cck
-dependencies[] = commerce
