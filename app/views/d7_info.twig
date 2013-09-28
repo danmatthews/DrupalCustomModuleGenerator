@@ -2,5 +2,5 @@ name = {{ module_name }}
 description = {{ description }}
 core = 7.x
 {% for d in dependencies %}
-dependencies[] = {{ d }}
+dependencies[] = {{ d|lower }}
 {% endfor %}

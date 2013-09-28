@@ -13,7 +13,9 @@ use \Chumper\Zipper\Zipper;
 |
 */
 
-Route::get('/', function()
+$debug = false;
+
+Route::get('/', function() use ($debug)
 {
 
 	// Set an hourly cache to clean the folders out.
@@ -27,7 +29,7 @@ Route::get('/', function()
 	]);
 });
 
-Route::post('process', function()
+Route::post('process', function() use ($debug)
 {
 	$input = Input::all();
 
@@ -41,10 +43,17 @@ Route::post('process', function()
 		return Redirect::to('/')->withErrors($validator)->withInput($input);
 	} else {
 
-		$name = strtolower(  str_replace([' '], ['_'], $input['module_name']) );
+		$name = Str::slug($input['module_name'], '_');
+
 		$description = $input['module_description'];
+
 		$version = (int)$input['drupal_version'];
+
 		$dependencies = explode(',', $input['dependencies']);
+
+		if (empty($dependencies[0])) {
+			$dependencies = [];
+		}
 
 		$info_file = View::make("d{$version}_info", [
 			'module_name' => $name,
@@ -71,6 +80,11 @@ Route::post('process', function()
 
 		if (File::isDirectory($tempfoldername)) {
 			File::put($tempfoldername."/{$name}.module", $module_file);
+		}
+
+		if ($debug === true) {
+			// Just output to the screen, don't do anything else.
+			return Response::make($info_file . "\n\n\n\n" . $module_file)->header('Content-type', 'text/plain');
 		}
 
 		/** Zip the thing up **/
