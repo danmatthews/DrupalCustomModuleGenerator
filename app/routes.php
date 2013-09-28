@@ -13,6 +13,10 @@ use \Chumper\Zipper\Zipper;
 |
 */
 
+/**
+ * Turn this on to enable printing to the screen & not zipping & creating files.
+ * @var boolean
+ */
 $debug = false;
 
 Route::get('/', function() use ($debug)
