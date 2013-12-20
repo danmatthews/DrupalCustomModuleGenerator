@@ -5,13 +5,17 @@
  * {{ module_name }}.module
  */
 
-function {{ module_name }}_menu()
-{
-	$items = array();
-	return $items;
+/**
+ * Implements hook_menu().
+ */
+function {{ module_name }}_menu() {
+  $items = array();
+  return $items;
 }
 
-function {{ module_name }}_form_alter()
-{
+/**
+ * Implements hook_form_alter().
+ */
+function {{ module_name }}_form_alter() {
 
 }
