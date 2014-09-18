@@ -60,7 +60,7 @@ Route::post('process', function() use ($debug)
 		}
 
 		$info_file = View::make("d{$version}_info", [
-			'module_name' => $name,
+			'module_name' => $input['module_name'],
 			'dependencies' => $dependencies,
 			'description' => $description,
 		])->render();
