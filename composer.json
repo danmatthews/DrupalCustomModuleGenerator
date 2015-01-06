@@ -6,7 +6,8 @@
 	"require": {
 		"laravel/framework": "4.0.*",
 		"danmatthews/laraveltwigview": "1.*",
-		"Chumper/Zipper": "dev-master"
+		"Chumper/Zipper": "dev-master",
+		"symfony/yaml": "~3.0@dev"
 	},
 	"autoload": {
 		"classmap": [
@@ -35,5 +36,8 @@
 	"config": {
 		"preferred-install": "dist"
 	},
-	"minimum-stability": "dev"
+	"minimum-stability": "dev",
+	"require-dev": {
+		"symfony/var-dumper": "~3.0@dev"
+	}
 }

@@ -1,6 +1,8 @@
 <?php
 
 use \Chumper\Zipper\Zipper;
+use \Symfony\Component\Yaml\Dumper;
+use \Symfony\Component\Yaml\Yaml;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +43,7 @@ Route::post('process', function() use ($debug)
 		'module_name' => 'required|min:3',
 		'module_description' => 'required|min:3',
 	];
+
 	$validator = Validator::make($input, $rules);
 
 	if ($validator->fails()) {
@@ -59,11 +62,22 @@ Route::post('process', function() use ($debug)
 			$dependencies = [];
 		}
 
-		$info_file = View::make("d{$version}_info", [
-			'module_name' => $input['module_name'],
+		$module_info = [
+			'name' => $input['module_name'],
 			'dependencies' => $dependencies,
 			'description' => $description,
-		])->render();
+		];
+
+		if (in_array($version, array(6,7))) {
+			$info_file = View::make("d{$version}_info", $module_info)->render();
+		}
+		else if ($version == 8) {
+			$module_info['core'] = '8.x';
+			$module_info['package'] = 'Custom';
+			$module_info['type'] = 'module';
+			$dumper = new Dumper();
+			$info_file = $dumper->dump($module_info, 2);
+		}
 
 		$tempfoldername = storage_path().'/downloads/modulename_'.$name;
 
@@ -73,15 +87,50 @@ Route::post('process', function() use ($debug)
 			File::cleanDirectory($tempfoldername);
 		}
 
-		File::put($tempfoldername."/{$name}.info", $info_file);
+		// Drupal 8 ? Ensure that src/Controllers exists
+		if ($version == 8) {
+			$tempSrcDir = storage_path().'/downloads/modulename_'.$name.'/src/Controller';
+			if (!File::isDirectory($tempSrcDir)) {
+				File::makeDirectory($tempSrcDir, 0777, true);
+			} else {
+				File::cleanDirectory($tempSrcDir);
+			}
+		}
 
+		// Is this Drupal 8, does it need a .yaml extension?
+		$suffix = $version == 8 ? '.yml' : '';
+		File::put($tempfoldername."/{$name}.info".$suffix, $info_file);
+
+		// Create a routing file.
+		if ($version == 8) {
+			$namespace = '\\Drupal\\'.$name.'\\Controller';
+			$className = str_replace(' ', '', ucwords(strtolower($module_info['name'])));
+			$controllerClassname = $className.'StartController';
+			$fullClassPath = $namespace.'\\'.$controllerClassname;
+			$routing = [
+				$name.'.start' => [
+					'path' => '/custom/start',
+					'defaults' => [
+						'_controller' => $fullClassPath.'::startAction',
+					],
+					'requirements' => [
+						'_permission' => 'access content',
+					],
+				],
+			];
+
+			// Output the YAML routing file.
+			if (File::isDirectory($tempSrcDir)) {
+				File::put($tempfoldername."/{$name}.routing.yml", Yaml::dump($routing, 20));
+				File::put($tempfoldername."/src/Controller/{$controllerClassname}.php", View::make('d8controller', ['namespace' => $name, 'controller_name' => $controllerClassname])->render());
+			}
+		}
 		/** Module File **/
 		$module_file = View::make("module", [
 			'module_name' => $name,
 			'dependencies' => $dependencies,
 			'description' => $description,
 		])->render();
-
 		if (File::isDirectory($tempfoldername)) {
 			File::put($tempfoldername."/{$name}.module", $module_file);
 		}
@@ -106,8 +155,6 @@ Route::post('process', function() use ($debug)
 			$zipper->close();
 			return Response::download($zipfilename, "$name");
 		}
-
-		dd(Input::all());
 	}
 
 });

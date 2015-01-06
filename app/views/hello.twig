@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Custom Module Generator</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="bootstrap.css" type="text/css" />
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.0/chosen.jquery.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/tagmanager/3.0.0/tagmanager.js"></script>
@@ -21,6 +21,9 @@
     </script>
 
     <style>
+    body {
+        padding-top: 20px;
+    }
         #tag-container {
             margin-top: 6px;
         }
@@ -50,6 +53,9 @@
 </head>
 <body>
     <div class="container">
+            <div class="alert alert-info">
+        <p><strong>Drupal 8 support is now enabled!</strong>. Generate a basic custom module with an example route.</p>
+    </div>
         <div class="page-header">
              <h1>Generate a blank Drupal module skeleton.</h1>
         </div>
@@ -65,20 +71,21 @@
     </div>
         {% endif %}
     {{ formOpen({'url' : 'process'}) }}
-
-    <div class="form-group">
+    <div class="row">
+    <div class="form-group col-xs-6">
         {{ formLabel('module_name', 'Module Name (Will be lowercased and spaces converted to underscores)') }}
         {{ formText('module_name', null, {'class':'form-control'}) }}
     </div>
 
-     <div class="form-group">
+     <div class="form-group col-xs-6">
         {{formLabel('module_description') }}
         {{ formText('module_description', null, {'class':'form-control'}) }}
+    </div>
     </div>
 
     <div class="form-group">
         {{ formLabel('drupal_version', 'Drupal Version:') }}
-        {{ formSelect('drupal_version', {7:'7.x', 6:'6.x'}, null, {'class':'form-control'}) }}
+        {{ formSelect('drupal_version', {8: '8.x (Experimental)', 7:'7.x', 6:'6.x'}, null, {'class':'form-control'}) }}
     </div>
 
     <div class="form-group">
@@ -91,7 +98,7 @@
     </div>
 
     <div class="">
-        {{ formSubmit('Create', {'class':'btn btn-success'}) }}
+        {{ formSubmit('Download ZIP', {'class':'btn btn-success'}) }}
     </div>
 
     {{ formClose() }}
