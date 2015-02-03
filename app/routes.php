@@ -153,7 +153,7 @@ Route::post('process', function() use ($debug)
 		$zipper->make($zipfilename)->add($tempfoldername);
 		if ($zipper->getStatus() == 'No error') {
 			$zipper->close();
-			return Response::download($zipfilename.'.zip', "$name");
+			return Response::download($zipfilename, "{$name}.zip");
 		}
 	}
 
